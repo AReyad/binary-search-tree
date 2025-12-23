@@ -110,26 +110,27 @@ class Tree
 
   def get_successor(data)
     targeted_node = find(data).right
+
     targeted_node = targeted_node.left until targeted_node.left.nil?
+
     delete(targeted_node.data)
     targeted_node
   end
 
-  def level_order(root = self.root, queue = [], values = [])
-    return if root.nil?
+  def level_order(root = self.root, queue = [root], values = [], &block)
+    return values if root.nil?
 
-    queue << root
-    until queue.empty?
-      root = queue.first
-      queue << root.left if root.left
-      queue << root.right if root.right
-      block_given? ? yield(queue.shift) : values << queue.shift.data
-    end
-    values
+    queue << root.left if root.left
+    queue << root.right if root.right
+
+    yield queue.first if block_given?
+    values << queue.shift.data
+
+    level_order(queue.first, queue, values, &block)
   end
 end
 
-tree = Tree.new([1, 2, 3, 4, 5])
+tree = Tree.new([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324])
+
 tree.display
-tree.insert(4)
-tree.display
+p tree.level_order
