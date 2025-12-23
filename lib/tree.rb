@@ -11,13 +11,14 @@ class Tree
 
   def insert(data, root = self.root)
     inserted_node = Node.new(data)
-    return self.root = inserted_node if self.root.nil? # if tree is empty assign inserted node to root
-    return root if root == inserted_node # prevents inserting a duplicate
+
+    # if tree is empty assign inserted node to root
+    return self.root = inserted_node if self.root.nil?
     return inserted_node if root.nil?
 
     if data < root.data
       root.left = insert(data, root.left)
-    else
+    elsif data > root.data
       root.right = insert(data, root.right)
     end
     root
@@ -36,12 +37,12 @@ class Tree
 
   def find(data, root = self.root)
     return if root.nil?
-    return root if root&.data == data
+    return root if root.data == data
 
     if data < root.data
-      root.left = find(data, root.left)
+      find(data, root.left)
     else
-      root.right = find(data, root.right)
+      find(data, root.right)
     end
   end
 
@@ -51,7 +52,24 @@ class Tree
     display(node&.left, "#{prefix}#{is_left ? '    ' : '│   '}", true) if node&.left
   end
 
-  # private
+  private
+
+  def build_tree(array)
+    unique_sorted_array = array.sort.uniq
+    sorted_array_to_bst(unique_sorted_array)
+  end
+
+  def sorted_array_to_bst(array, start_point = 0, end_point = array.length - 1)
+    return if start_point > end_point
+
+    middle = (start_point + end_point) / 2
+    root = Node.new(array[middle])
+
+    root.left = sorted_array_to_bst(array, start_point, middle - 1)
+    root.right = sorted_array_to_bst(array, middle + 1, end_point)
+
+    root
+  end
 
   def delete_leaf_node(data, root = self.root)
     return if root&.data == data
@@ -72,23 +90,6 @@ class Tree
     else
       parent_node.right = parent_node.right.right || parent_node.right.left
     end
-  end
-
-  def build_tree(array)
-    unique_sorted_array = array.sort.uniq
-    sorted_array_to_bst(unique_sorted_array)
-  end
-
-  def sorted_array_to_bst(array, start_point = 0, end_point = array.length - 1)
-    return if start_point > end_point
-
-    middle = (start_point + end_point) / 2
-    root = Node.new(array[middle])
-
-    root.left = sorted_array_to_bst(array, start_point, middle - 1)
-    root.right = sorted_array_to_bst(array, middle + 1, end_point)
-
-    root
   end
 
   def delete_two_children_node(data)
@@ -130,6 +131,5 @@ end
 
 tree = Tree.new([1, 2, 3, 4, 5])
 tree.display
-tree.insert(6)
-p tree.find(6)
+tree.insert(4)
 tree.display
