@@ -16,4 +16,16 @@ class Node
   def leaf?
     left.nil? && right.nil?
   end
+
+  def one_child?
+    return true if left || right
+
+    false
+  end
+
+  def two_children?
+    return true if left && right
+
+    false
+  end
 end

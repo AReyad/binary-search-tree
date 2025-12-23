@@ -29,20 +29,19 @@ class Tree
 
     return delete_leaf_node(data) if targeted_node.leaf?
 
-    return delete_one_child_node(data) if targeted_node.left.nil? || targeted_node.right.nil?
+    return delete_one_child_node(data) if targeted_node.one_child?
 
-    delete_two_children_node(data) if targeted_node.left && targeted_node.right
+    delete_two_children_node(data) if targeted_node.two_children?
   end
 
   def find(data, root = self.root)
-    until root.nil? || root.data == data
-      root = if data < root.data
-               root.left
-             else
-               root.right
-             end
+    return root if root&.data == data
+
+    if data < root.data
+      root.left = find(data, root.left)
+    else
+      root.right = find(data, root.left)
     end
-    root
   end
 
   def display(node = @root, prefix = '', is_left = true)
@@ -127,3 +126,7 @@ class Tree
     values
   end
 end
+
+tree = Tree.new([1, 2, 3, 4, 5])
+tree.display
+tree.find(3)
