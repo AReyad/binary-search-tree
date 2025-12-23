@@ -35,12 +35,13 @@ class Tree
   end
 
   def find(data, root = self.root)
+    return if root.nil?
     return root if root&.data == data
 
     if data < root.data
       root.left = find(data, root.left)
     else
-      root.right = find(data, root.left)
+      root.right = find(data, root.right)
     end
   end
 
@@ -129,4 +130,6 @@ end
 
 tree = Tree.new([1, 2, 3, 4, 5])
 tree.display
-tree.find(3)
+tree.insert(6)
+p tree.find(6)
+tree.display
