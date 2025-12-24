@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 require_relative 'node'
+require_relative 'helpers'
 
 class Tree
+  include Helpers
   attr_accessor :root
 
   def initialize(array)
@@ -37,6 +39,7 @@ class Tree
 
   def find(data, root = self.root)
     return if root.nil?
+
     return root if root.data == data
 
     if data < root.data
@@ -46,75 +49,16 @@ class Tree
     end
   end
 
-  def display(node = @root, prefix = '', is_left = true)
-    display(node&.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node&.right
-    puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node&.data}"
-    display(node&.left, "#{prefix}#{is_left ? '    ' : '│   '}", true) if node&.left
-  end
+  def depth(data, root = self.root, depth = 0)
+    return if root.nil?
 
-  private
-
-  def build_tree(array)
-    unique_sorted_array = array.sort.uniq
-    sorted_array_to_bst(unique_sorted_array)
-  end
-
-  def sorted_array_to_bst(array, start_point = 0, end_point = array.length - 1)
-    return if start_point > end_point
-
-    middle = (start_point + end_point) / 2
-    root = Node.new(array[middle])
-
-    root.left = sorted_array_to_bst(array, start_point, middle - 1)
-    root.right = sorted_array_to_bst(array, middle + 1, end_point)
-
-    root
-  end
-
-  def delete_leaf_node(data, root = self.root)
-    return if root&.data == data
+    return depth if root.data == data
 
     if data < root.data
-      root.left = delete_leaf_node(data, root.left)
+      depth(data, root.left, depth + 1)
     else
-      root.right = delete_leaf_node(data, root.right)
+      depth(data, root.right, depth + 1)
     end
-    root
-  end
-
-  def delete_one_child_node(data)
-    parent_node = get_parent_node(data)
-
-    if parent_node.data > data
-      parent_node.left = parent_node.left.left || parent_node.left.right
-    else
-      parent_node.right = parent_node.right.right || parent_node.right.left
-    end
-  end
-
-  def delete_two_children_node(data)
-    successor = get_successor(data)
-    targeted_node = find(data)
-    targeted_node.data = successor.data
-  end
-
-  def get_parent_node(data, root = self.root)
-    return root if root.left&.data == data || root.right.data == data
-
-    if data < root.data
-      root.left = get_parent_node(data, root.left)
-    else
-      root.right = get_parent_node(data, root.right)
-    end
-  end
-
-  def get_successor(data)
-    targeted_node = find(data).right
-
-    targeted_node = targeted_node.left until targeted_node.left.nil?
-
-    delete(targeted_node.data)
-    targeted_node
   end
 
   def level_order(root = self.root, queue = [root], values = [], &block)
@@ -123,14 +67,66 @@ class Tree
     queue << root.left if root.left
     queue << root.right if root.right
 
-    yield queue.first if block_given?
-    values << queue.shift.data
+    current_value = queue.shift.data
+    current_value = yield current_value if block_given?
+    values << current_value if current_value
 
     level_order(queue.first, queue, values, &block)
   end
+
+  def preorder(root = self.root, values = [], &block)
+    return values if root.nil?
+
+    if block_given?
+      current_value = yield root.data
+      values << current_value if current_value
+    else
+      values << root.data
+    end
+    preorder(root.left, values, &block)
+    preorder(root.right, values, &block)
+  end
+
+  def inorder(root = self.root, values = [], &block)
+    return values if root.nil?
+
+    inorder(root.left, values, &block)
+    if block_given?
+      current_value = yield root.data
+      values << current_value if current_value
+    else
+      values << root.data
+    end
+    inorder(root.right, values, &block)
+  end
+
+  def postorder(root = self.root, values = [], &block)
+    return values if root.nil?
+
+    postorder(root.left, values, &block)
+    postorder(root.right, values, &block)
+    if block_given?
+      current_value = yield root.data
+      values << current_value if current_value
+    else
+      values << root.data
+    end
+  end
 end
 
-tree = Tree.new([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324])
+tree = Tree.new((1..9).to_a)
 
 tree.display
-p tree.level_order
+p tree.height(5)
+
+print 'Level order =>'
+p(tree.level_order { |e| e + 1 })
+
+print 'Preorder => '
+p(tree.preorder { |e| e + 1 })
+
+print 'Inorder => '
+p(tree.inorder { |e| e + 1 })
+
+print 'Postorder => '
+p(tree.postorder { |e| e + 1 })
