@@ -61,6 +61,14 @@ class Tree
     end
   end
 
+  def height(data, root = find(data), heights = [], height = 0)
+    return heights.max if root.nil?
+
+    height(data, root.left, heights, height + 1)
+    heights << height
+    height(data, root.right, heights, height + 1)
+  end
+
   def level_order(root = self.root, queue = [root], values = [], &block)
     return values if root.nil?
 
@@ -115,7 +123,6 @@ class Tree
 end
 
 tree = Tree.new((1..9).to_a)
-
 tree.display
 p tree.height(5)
 
