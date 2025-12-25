@@ -62,11 +62,12 @@ class Tree
   end
 
   def height(data, root = find(data), heights = [], height = 0)
-    return heights.max if root.nil?
+    return 0 if root.nil?
 
     height(data, root.left, heights, height + 1)
     heights << height
     height(data, root.right, heights, height + 1)
+    heights.max
   end
 
   def level_order(root = self.root, queue = [root], values = [], &block)
@@ -121,13 +122,16 @@ class Tree
     end
   end
 
-  def balanced?(root = self.root)
+  def balanced?(root = self.root, sum = [])
+    return if root.nil?
+
     left = height(root.data, root.left)
     right = height(root.data, root.right)
 
-    return true if (left - right).between?(-1, 1)
-
-    false
+    balanced?(root.left, sum)
+    balanced?(root.right, sum)
+    sum << (left - right).abs
+    sum.max <= 1
   end
 
   def rebalance
