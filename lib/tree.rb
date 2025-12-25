@@ -120,11 +120,42 @@ class Tree
       values << root.data
     end
   end
+
+  def balanced?(root = self.root)
+    left = height(root.data, root.left)
+    right = height(root.data, root.right)
+
+    p [left, right]
+    return true if (left - right).between?(-1, 1)
+
+    false
+  end
+
+  def rebalance
+    return if balanced?
+
+    array_of_values = inorder
+    self.root = build_tree(array_of_values)
+  end
 end
 
 tree = Tree.new((1..9).to_a)
+
 tree.display
+p tree.balanced?
 p tree.height(5)
+tree.insert(2.5)
+tree.insert(2.6)
+tree.insert(2.5)
+tree.insert(1.8)
+tree.insert(0.8)
+tree.insert(0.2)
+tree.insert(0.2)
+tree.insert(0.4)
+tree.display
+p tree.balanced?
+tree.rebalance
+tree.display
 
 print 'Level order =>'
 p(tree.level_order { |e| e + 1 })
