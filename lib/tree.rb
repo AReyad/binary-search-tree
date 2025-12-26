@@ -123,7 +123,7 @@ class Tree
   end
 
   def balanced?(root = self.root, sum = [])
-    return if root.nil?
+    return true if root.nil?
 
     left = height(root.data, root.left)
     right = height(root.data, root.right)
