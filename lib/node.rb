@@ -20,9 +20,7 @@ class Node
   end
 
   def one_child?
-    return true if left || right
-
-    false
+    left.nil? || right.nil?
   end
 
   def two_children?
