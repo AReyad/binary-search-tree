@@ -5,6 +5,9 @@ require_relative 'lib/tree'
 tree = Tree.new(Array.new(15) { rand(1..100) })
 tree.display
 puts ''
+
+print 'Balanced =>'
+p tree.balanced?
 tree.insert(101)
 tree.insert(102)
 tree.insert(103)
@@ -15,22 +18,47 @@ tree.insert(1010)
 tree.display
 puts ''
 
+print 'Balanced =>'
+p tree.balanced?
+
 puts ''
 
+print 'Level order =>'
+p(tree.level_order { |e| e })
+
+print 'Preorder => '
+p(tree.preorder { |e| e })
+
+print 'Inorder => '
+p(tree.inorder { |e| e })
+
+print 'Postorder => '
+p(tree.postorder { |e| e })
+
+puts ''
+puts 'Tree before balancing'
+tree.display
+
 tree.rebalance
+
+print 'Balanced => '
+p tree.balanced?
+
+puts ''
+puts 'Tree After balancing'
 tree.display
 
 print 'Balanced => '
 p tree.balanced?
 
 print 'Level order =>'
-p(tree.level_order { |e| e + 1 })
+p(tree.level_order { |e| e })
 
 print 'Preorder => '
-p(tree.preorder { |e| e + 1 })
+p(tree.preorder { |e| e })
 
 print 'Inorder => '
-p(tree.inorder { |e| e + 1 })
+p(tree.inorder { |e| e })
 
 print 'Postorder => '
-p(tree.postorder { |e| e + 1 })
+p(tree.postorder { |e| e })
