@@ -11,19 +11,19 @@ class Tree
     @root = build_tree(array)
   end
 
-  def insert(data, root = self.root)
+  def insert(data, curent_node = root)
     inserted_node = Node.new(data)
 
     # if tree is empty assign inserted node to root
-    return self.root = inserted_node if self.root.nil?
-    return inserted_node if root.nil?
+    return self.root = inserted_node if root.nil?
+    return inserted_node if curent_node.nil?
 
-    if data < root.data
-      root.left = insert(data, root.left)
-    elsif data > root.data
-      root.right = insert(data, root.right)
+    if data < curent_node.data
+      curent_node.left = insert(data, curent_node.left)
+    elsif data > curent_node.data
+      curent_node.right = insert(data, curent_node.right)
     end
-    root
+    curent_node
   end
 
   def delete(data)
@@ -32,49 +32,50 @@ class Tree
 
     return delete_leaf_node(data) if targeted_node.leaf?
 
-    return delete_one_child_node(data) if targeted_node.one_child?
+    return delete_one_child_node(targeted_node) if targeted_node.one_child?
 
-    delete_two_children_node(data) if targeted_node.two_children?
+    delete_two_children_node(targeted_node) if targeted_node.two_children?
   end
 
-  def find(data, root = self.root)
-    return if root.nil?
+  def find(data, current_node = root)
+    p "Called on #{current_node&.data}"
+    return if current_node.nil?
 
-    return root if root.data == data
+    return current_node if current_node.data == data
 
-    if data < root.data
-      find(data, root.left)
+    if data < current_node.data
+      find(data, current_node.left)
     else
-      find(data, root.right)
+      find(data, current_node.right)
     end
   end
 
-  def depth(data, root = self.root, depth = 0)
-    return if root.nil?
+  def depth(data, current_node = root, depth = 0)
+    return if current_node.nil?
 
-    return depth if root.data == data
+    return depth if current_node.data == data
 
-    if data < root.data
-      depth(data, root.left, depth + 1)
+    if data < current_node.data
+      depth(data, current_node.left, depth + 1)
     else
-      depth(data, root.right, depth + 1)
+      depth(data, current_node.right, depth + 1)
     end
   end
 
-  def height(data, root = find(data), heights = [], height = 0)
-    return 0 if root.nil?
+  def height(data, current_node = find(data), heights = [], height = 0)
+    return 0 if current_node.nil?
 
-    height(data, root.left, heights, height + 1)
+    height(data, current_node.left, heights, height + 1)
     heights << height
-    height(data, root.right, heights, height + 1)
+    height(data, current_node.right, heights, height + 1)
     heights.max
   end
 
-  def level_order(root = self.root, queue = [root], values = [], &block)
-    return values if root.nil?
+  def level_order(current_node = root, queue = [root], values = [], &block)
+    return values if current_node.nil?
 
-    queue << root.left if root.left
-    queue << root.right if root.right
+    queue << current_node.left if current_node.left
+    queue << current_node.right if current_node.right
 
     current_value = queue.shift.data
     current_value = yield current_value if block_given?
@@ -83,55 +84,54 @@ class Tree
     level_order(queue.first, queue, values, &block)
   end
 
-  def preorder(root = self.root, values = [], &block)
-    return values if root.nil?
+  def preorder(current_node = root, values = [], &block)
+    return values if current_node.nil?
 
     if block_given?
-      current_value = yield root.data
+      current_value = yield current_node.data
       values << current_value if current_value
     else
-      values << root.data
+      values << current_node.data
     end
-    preorder(root.left, values, &block)
-    preorder(root.right, values, &block)
+    preorder(current_node.left, values, &block)
+    preorder(current_node.right, values, &block)
   end
 
-  def inorder(root = self.root, values = [], &block)
-    return values if root.nil?
+  def inorder(current_node = root, values = [], &block)
+    return values if current_node.nil?
 
-    inorder(root.left, values, &block)
+    inorder(current_node.left, values, &block)
     if block_given?
-      current_value = yield root.data
+      current_value = yield current_node.data
       values << current_value if current_value
     else
-      values << root.data
+      values << current_node.data
     end
-    inorder(root.right, values, &block)
+    inorder(current_node.right, values, &block)
   end
 
-  def postorder(root = self.root, values = [], &block)
-    return values if root.nil?
+  def postorder(current_node = root, values = [], &block)
+    return values if current_node.nil?
 
-    postorder(root.left, values, &block)
-    postorder(root.right, values, &block)
+    postorder(current_node.left, values, &block)
+    postorder(current_node.right, values, &block)
     if block_given?
-      current_value = yield root.data
+      current_value = yield current_node.data
       values << current_value if current_value
     else
-      values << root.data
+      values << current_node.data
     end
   end
 
-  def balanced?(root = self.root, sum = [])
-    return true if root.nil?
+  def balanced?(current_node = root, sum = [])
+    return true if current_node.nil?
 
-    left = height(root.data, root.left)
-    right = height(root.data, root.right)
+    left = height(current_node.data, current_node.left)
+    right = height(current_node.data, current_node.right)
 
-    balanced?(root.left, sum)
-    balanced?(root.right, sum)
-    sum << (left - right).abs
-    sum.max <= 1
+    balanced?(current_node.left, sum)
+    balanced?(current_node.right, sum)
+    (left - right).abs <= 1
   end
 
   def rebalance
