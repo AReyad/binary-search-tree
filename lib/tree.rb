@@ -42,7 +42,6 @@ class Tree
   end
 
   def find(data, current_node = root)
-    p "Called on #{current_node&.data}"
     return if current_node.nil?
 
     return current_node if current_node.data == data
