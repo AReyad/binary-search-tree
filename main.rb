@@ -15,29 +15,12 @@ tree.insert(104)
 tree.insert(105)
 tree.insert(108)
 tree.insert(1010)
+
+puts 'Tree before balancing'
 tree.display
 puts ''
-
-puts ''
-
-print 'Level order =>'
-p(tree.level_order { |e| e })
-
-print 'Preorder => '
-p(tree.preorder { |e| e })
-
-print 'Inorder => '
-p(tree.inorder { |e| e })
-
-print 'Postorder => '
-p(tree.postorder { |e| e })
-
-puts ''
-puts 'Tree before balancing'
 print 'Balanced =>'
 p tree.balanced?
-puts ''
-tree.display
 
 tree.rebalance
 tree.insert(1090)
