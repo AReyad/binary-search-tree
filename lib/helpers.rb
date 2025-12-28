@@ -27,30 +27,26 @@ module Helpers
     root
   end
 
-  def delete_one_child_node(data)
-    targeted_node = find(data)
-
-    left = targeted_node.left
-    right = targeted_node.right
+  def delete_one_child_node(node)
+    left = node.left
+    right = node.right
 
     if left
-      targeted_node.data = left.data
-      targeted_node.left = nil
+      node.data = left.data
+      node.left = nil
     else
-      targeted_node.data = right.data
-      targeted_node.right = nil
+      node.data = right.data
+      node.right = nil
     end
   end
 
-  def delete_two_children_node(data)
-    successor = get_successor(data)
+  def delete_two_children_node(node)
+    successor = get_successor(node)
     successor_data = successor.data
 
-    targeted_node = find(data)
+    delete_leaf_node(successor.data)
 
-    delete(successor.data)
-
-    targeted_node.data = successor_data
+    node.data = successor_data
   end
 
   def get_parent_node(data, root = self.root)
@@ -63,8 +59,8 @@ module Helpers
     end
   end
 
-  def get_successor(data)
-    targeted_node = find(data).right
+  def get_successor(node)
+    targeted_node = node.right
     targeted_node = targeted_node.left until targeted_node.left.nil?
 
     targeted_node
