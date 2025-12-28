@@ -28,15 +28,14 @@ module Helpers
   end
 
   def delete_one_child_node(node)
-    left = node.left
-    right = node.right
-
-    if left
-      node.data = left.data
+    if node.left
+      left = node.left
       node.left = nil
+      left
     else
-      node.data = right.data
+      right = node.right
       node.right = nil
+      right
     end
   end
 
@@ -44,8 +43,7 @@ module Helpers
     successor = get_successor(node)
     successor_data = successor.data
 
-    delete_leaf_node(successor.data)
-
+    delete(successor_data)
     node.data = successor_data
   end
 
@@ -62,7 +60,6 @@ module Helpers
   def get_successor(node)
     targeted_node = node.right
     targeted_node = targeted_node.left until targeted_node.left.nil?
-
     targeted_node
   end
 
