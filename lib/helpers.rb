@@ -47,16 +47,6 @@ module Helpers
     node.data = successor_data
   end
 
-  def get_parent_node(data, root = self.root)
-    return root if root.left&.data == data || root.right.data == data
-
-    if data < root.data
-      root.left = get_parent_node(data, root.left)
-    else
-      root.right = get_parent_node(data, root.right)
-    end
-  end
-
   def get_successor(node)
     targeted_node = node.right
     targeted_node = targeted_node.left until targeted_node.left.nil?
