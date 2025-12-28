@@ -123,15 +123,16 @@ class Tree
     end
   end
 
-  def balanced?(current_node = root, sum = [])
-    return true if current_node.nil?
+  def balanced?(root = self.root, sum = [])
+    return true if root.nil?
 
-    left = height(current_node.data, current_node.left)
-    right = height(current_node.data, current_node.right)
+    left = height(root.data, root.left)
+    right = height(root.data, root.right)
 
-    balanced?(current_node.left, sum)
-    balanced?(current_node.right, sum)
-    (left - right).abs <= 1
+    balanced?(root.left, sum)
+    balanced?(root.right, sum)
+    sum << (left - right).abs
+    sum.max <= 1
   end
 
   def rebalance
