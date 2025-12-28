@@ -26,15 +26,19 @@ class Tree
     curent_node
   end
 
-  def delete(data)
-    targeted_node = find(data)
-    return unless targeted_node
+  def delete(data, current_node = root)
+    return current_node if current_node.nil?
 
-    return delete_leaf_node(data) if targeted_node.leaf?
+    if data < current_node.data
+      current_node.left = delete(data, current_node.left)
+    elsif data > current_node.data
+      current_node.right = delete(data, current_node.right)
+    else
+      return delete_one_child_node(current_node) if current_node.one_child?
 
-    return delete_one_child_node(targeted_node) if targeted_node.one_child?
-
-    delete_two_children_node(targeted_node) if targeted_node.two_children?
+      delete_two_children_node(current_node) if current_node.two_children?
+    end
+    current_node
   end
 
   def find(data, current_node = root)
