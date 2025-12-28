@@ -16,15 +16,15 @@ module Helpers
     root
   end
 
-  def delete_leaf_node(data, root = self.root)
-    return if root&.data == data
+  def delete_leaf_node(data, curent_node = root)
+    return if curent_node&.data == data
 
-    if data < root.data
-      root.left = delete_leaf_node(data, root.left)
+    if data < curent_node.data
+      curent_node.left = delete_leaf_node(data, curent_node.left)
     else
-      root.right = delete_leaf_node(data, root.right)
+      curent_node.right = delete_leaf_node(data, curent_node.right)
     end
-    root
+    curent_node
   end
 
   def delete_one_child_node(node)
