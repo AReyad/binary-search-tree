@@ -127,14 +127,14 @@ class Tree
     end
   end
 
-  def balanced?(root = self.root, sum = [])
-    return true if root.nil?
+  def balanced?(curent_node = root, sum = [])
+    return true if curent_node.nil?
 
-    left = height(root.data, root.left)
-    right = height(root.data, root.right)
+    left = height(curent_node.data, curent_node.left)
+    right = height(curent_node.data, curent_node.right)
 
-    balanced?(root.left, sum)
-    balanced?(root.right, sum)
+    balanced?(curent_node.left, sum)
+    balanced?(curent_node.right, sum)
     sum << (left - right).abs
     sum.max <= 1
   end
