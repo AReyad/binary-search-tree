@@ -53,6 +53,18 @@ module Helpers
     targeted_node
   end
 
+  def balanced?(curent_node = root, sum = [])
+    return true if curent_node.nil?
+
+    left = height(curent_node.data, curent_node.left)
+    right = height(curent_node.data, curent_node.right)
+
+    balanced?(curent_node.left, sum)
+    balanced?(curent_node.right, sum)
+    sum << (left - right).abs
+    sum.max <= 1
+  end
+
   def display(node = @root, prefix = '', is_left = true)
     display(node&.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node&.right
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node&.data}"
