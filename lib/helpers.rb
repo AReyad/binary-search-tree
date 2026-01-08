@@ -16,15 +16,15 @@ module Helpers
     root
   end
 
-  def delete_leaf_node(data, curent_node = root)
-    return if curent_node&.data == data
+  def delete_leaf_node(data, current_node = root)
+    return if current_node&.data == data
 
-    if data < curent_node.data
-      curent_node.left = delete_leaf_node(data, curent_node.left)
+    if data < current_node.data
+      current_node.left = delete_leaf_node(data, current_node.left)
     else
-      curent_node.right = delete_leaf_node(data, curent_node.right)
+      current_node.right = delete_leaf_node(data, current_node.right)
     end
-    curent_node
+    current_node
   end
 
   def delete_one_child_node(node)
@@ -53,14 +53,14 @@ module Helpers
     targeted_node
   end
 
-  def balanced?(curent_node = root, sum = [])
-    return true if curent_node.nil?
+  def balanced?(current_node = root, sum = [])
+    return true if current_node.nil?
 
-    left = height(curent_node.data, curent_node.left)
-    right = height(curent_node.data, curent_node.right)
+    left = height(current_node.data, current_node.left)
+    right = height(current_node.data, current_node.right)
 
-    balanced?(curent_node.left, sum)
-    balanced?(curent_node.right, sum)
+    balanced?(current_node.left, sum)
+    balanced?(current_node.right, sum)
     sum << (left - right).abs
     sum.max <= 1
   end

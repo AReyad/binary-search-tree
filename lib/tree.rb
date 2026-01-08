@@ -11,19 +11,19 @@ class Tree
     @root = build_tree(array)
   end
 
-  def insert(data, curent_node = root)
+  def insert(data, current_node = root)
     inserted_node = Node.new(data)
 
     # if tree is empty assign inserted node to root
     return self.root = inserted_node if root.nil?
-    return inserted_node if curent_node.nil?
+    return inserted_node if current_node.nil?
 
-    if data < curent_node.data
-      curent_node.left = insert(data, curent_node.left)
-    elsif data > curent_node.data
-      curent_node.right = insert(data, curent_node.right)
+    if data < current_node.data
+      current_node.left = insert(data, current_node.left)
+    elsif data > current_node.data
+      current_node.right = insert(data, current_node.right)
     end
-    curent_node
+    current_node
   end
 
   def delete(data, current_node = root)
